@@ -1,225 +1,210 @@
-# Casos de Teste – Sistema SRL
-
-## CT01 – Cadastro de usuário válido
-**Módulo:** Autenticação  
-**Tipo:** Positivo  
-
-**Pré-condição:** Nenhum usuário cadastrado com o email informado.  
-
-**Passos:**
-1. Abrir o Postman
-2. Criar uma requisição POST `/auth/register`
-3. Enviar nome, email válido, senha válida e perfil USER
-
-**Resultado esperado:**
-- Status HTTP 201
-- Usuário cadastrado com sucesso
+# CASOS DE TESTE  
+## Sistema SRL
 
 ---
 
-## CT02 – Cadastro com email duplicado
-**Módulo:** Autenticação  
-**Tipo:** Negativo  
+## Estrutura do Caso de Teste
 
-**Pré-condição:** Usuário já cadastrado com o email informado.  
-
-**Passos:**
-1. POST `/auth/register`
-2. Informar um email já existente
-
-**Resultado esperado:**
-- Status HTTP 400
-- Mensagem informando email já cadastrado
+Cada caso contém:
+- ID
+- Módulo
+- Tipo (Positivo ou Negativo)
+- Pré-condição
+- Passos
+- Dados
+- Resultado Esperado
 
 ---
 
-## CT03 – Login com credenciais válidas
-**Módulo:** Autenticação  
-**Tipo:** Positivo  
-
-**Pré-condição:** Usuário cadastrado.  
-
-**Passos:**
-1. POST `/auth/login`
-2. Informar email e senha corretos
-
-**Resultado esperado:**
-- Status HTTP 200
-- Retorno de token JWT
+# 🔹 MÓDULO: AUTENTICAÇÃO
 
 ---
 
-## CT04 – Login com senha incorreta
-**Módulo:** Autenticação  
-**Tipo:** Negativo  
+### CT-01
+Módulo: Autenticação  
+Tipo: Positivo  
 
-**Passos:**
-1. POST `/auth/login`
-2. Informar senha incorreta
+Pré-condição: Usuário previamente cadastrado.
 
-**Resultado esperado:**
-- Status HTTP 401
-- Mensagem de credenciais inválidas
+Passos:
+1. Abrir Postman.
+2. Criar requisição POST para /login.
+3. Inserir email e senha válidos.
+4. Enviar requisição.
 
----
+Dados:
+{
+  "email": "usuario@email.com",
+  "senha": "123456"
+}
 
-## CT05 – Cadastro de sala por ADMIN
-**Módulo:** Salas  
-**Tipo:** Positivo  
-
-**Pré-condição:** Usuário autenticado como ADMIN.  
-
-**Passos:**
-1. POST `/rooms`
-2. Informar nome, capacidade > 0 e recursos
-
-**Resultado esperado:**
-- Status HTTP 201
-- Sala cadastrada com sucesso
+Resultado Esperado:
+- Status 200
+- Retorno de token de autenticação
 
 ---
 
-## CT06 – Cadastro de sala por USER
-**Módulo:** Salas  
-**Tipo:** Negativo  
+### CT-02
+Módulo: Autenticação  
+Tipo: Negativo  
 
-**Pré-condição:** Usuário autenticado como USER.  
+Pré-condição: Usuário cadastrado.
 
-**Passos:**
-1. POST `/rooms`
+Passos:
+1. Enviar requisição POST /login.
+2. Informar senha incorreta.
 
-**Resultado esperado:**
-- Status HTTP 403
-- Acesso negado
-
----
-
-## CT07 – Listar salas cadastradas
-**Módulo:** Salas  
-**Tipo:** Positivo  
-
-**Pré-condição:** Usuário autenticado.  
-
-**Passos:**
-1. GET `/rooms`
-
-**Resultado esperado:**
-- Status HTTP 200
-- Lista de salas retornada
+Resultado Esperado:
+- Status 401
+- Mensagem de erro: "Credenciais inválidas"
 
 ---
 
-## CT08 – Criar reserva válida
-**Módulo:** Reservas  
-**Tipo:** Positivo  
-
-**Pré-condição:** Sala existente e usuário autenticado.  
-
-**Passos:**
-1. POST `/bookings`
-2. Informar horários válidos entre 08:00 e 22:00
-
-**Resultado esperado:**
-- Status HTTP 201
-- Reserva criada com status CONFIRMED
+# 🔹 MÓDULO: CADASTRO DE USUÁRIO
 
 ---
 
-## CT09 – Criar reserva com horário inválido
-**Módulo:** Reservas  
-**Tipo:** Negativo  
+### CT-03
+Tipo: Positivo  
 
-**Passos:**
-1. POST `/bookings`
-2. Informar hora inicial maior que a final
-
-**Resultado esperado:**
-- Status HTTP 400
-- Erro de validação de horário
+Resultado Esperado:
+- Status 201
+- Usuário criado com sucesso
 
 ---
 
-## CT10 – Criar reserva com conflito de horário
-**Módulo:** Reservas  
-**Tipo:** Negativo  
+### CT-04
+Tipo: Negativo  
 
-**Pré-condição:** Reserva já existente no mesmo horário.  
+Cenário: Cadastro com email já existente  
 
-**Passos:**
-1. POST `/bookings`
-2. Informar horário conflitante
-
-**Resultado esperado:**
-- Status HTTP 409
-- Mensagem de conflito de reserva
+Resultado Esperado:
+- Status 400
+- Mensagem informando duplicidade
 
 ---
 
-## CT11 – Listar próprias reservas
-**Módulo:** Reservas  
-**Tipo:** Positivo  
-
-**Passos:**
-1. GET `/bookings/my`
-
-**Resultado esperado:**
-- Status HTTP 200
-- Apenas reservas do usuário autenticado
+# 🔹 MÓDULO: CADASTRO DE LABORATÓRIO
 
 ---
 
-## CT12 – Abrir incidente válido
-**Módulo:** Incidentes  
-**Tipo:** Positivo  
+### CT-05
+Tipo: Positivo  
 
-**Passos:**
-1. POST `/incidents`
-2. Informar descrição com mais de 10 caracteres
-
-**Resultado esperado:**
-- Status HTTP 201
-- Incidente com status OPEN
+Resultado Esperado:
+- Status 201
+- Laboratório criado
 
 ---
 
-## CT13 – Abrir incidente com descrição curta
-**Módulo:** Incidentes  
-**Tipo:** Negativo  
+### CT-06
+Tipo: Negativo  
 
-**Passos:**
-1. POST `/incidents`
-2. Informar descrição menor que 10 caracteres
+Cenário: Capacidade negativa  
 
-**Resultado esperado:**
-- Status HTTP 400
+Resultado Esperado:
+- Status 400
 - Erro de validação
 
 ---
 
-## CT14 – Finalizar incidente como ADMIN
-**Módulo:** Incidentes  
-**Tipo:** Positivo  
-
-**Pré-condição:** Incidente com status OPEN e usuário ADMIN.  
-
-**Passos:**
-1. PATCH `/incidents/{id}/close`
-
-**Resultado esperado:**
-- Status HTTP 200
-- Status alterado para CLOSED
+# 🔹 MÓDULO: CONSULTA
 
 ---
 
-## CT15 – Finalizar incidente como USER
-**Módulo:** Incidentes  
-**Tipo:** Negativo  
+### CT-07
+Tipo: Positivo  
 
-**Pré-condição:** Usuário autenticado como USER.  
+Resultado Esperado:
+- Status 200
+- Lista de laboratórios
 
-**Passos:**
-1. PATCH `/incidents/{id}/close`
+---
 
-**Resultado esperado:**
-- Status HTTP 403
-- Acesso negado
+### CT-08
+Tipo: Negativo  
+
+Cenário: Consulta de ID inexistente  
+
+Resultado Esperado:
+- Status 404
+
+---
+
+# 🔹 MÓDULO: RESERVA
+
+---
+
+### CT-09
+Tipo: Positivo  
+
+Resultado Esperado:
+- Status 201
+- Reserva criada
+
+---
+
+### CT-10
+Tipo: Negativo  
+
+Cenário: Reserva em horário já ocupado  
+
+Resultado Esperado:
+- Status 400
+
+---
+
+### CT-11
+Tipo: Negativo  
+
+Cenário: Reserva com data passada  
+
+Resultado Esperado:
+- Status 400
+
+---
+
+# 🔹 MÓDULO: CANCELAMENTO
+
+---
+
+### CT-12
+Tipo: Positivo  
+
+Resultado Esperado:
+- Status 200
+- Reserva cancelada
+
+---
+
+### CT-13
+Tipo: Negativo  
+
+Cenário: Cancelar reserva inexistente  
+
+Resultado Esperado:
+- Status 404
+
+---
+
+# 🔹 TESTES ADICIONAIS
+
+---
+
+### CT-14
+Tipo: Negativo  
+
+Cenário: Acesso sem token  
+
+Resultado Esperado:
+- Status 401
+
+---
+
+### CT-15
+Tipo: Positivo  
+
+Cenário: Consulta após criação  
+
+Resultado Esperado:
+- Registro refletido corretamente
